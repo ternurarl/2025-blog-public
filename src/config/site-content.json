@@ -41,17 +41,17 @@
 	"currentBackgroundImageId": "",
 	"socialButtons": [
 		{
-			"id": "github",
-			"type": "github",
-			"value": "https://github.com/ternurarl",
-			"label": "Github",
-			"order": 1
-		},
-		{
 			"id": "email",
 			"type": "email",
 			"value": "ba1n1ao@foxmail.com",
 			"label": "",
+			"order": 1
+		},
+		{
+			"id": "github",
+			"type": "github",
+			"value": "https://github.com/ternurarl",
+			"label": "Github",
 			"order": 2
 		}
 	]
