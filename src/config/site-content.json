@@ -55,5 +55,6 @@
 			"label": "Github",
 			"order": 2
 		}
-	]
+	],
+	"clockShowSeconds": false
 }
