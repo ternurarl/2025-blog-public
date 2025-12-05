@@ -1,26 +1,19 @@
 {
 	"meta": {
-		"title": "Ba1n1ao",
-		"description": "ba1n1ao 的个人博客，记录CTF笔记,个人学习过程."
+		"title": "YYsuni",
+		"description": "YYsuni 的个人博客，记录前端开发、探索笔记。前端 UI 更新代码仓库。"
 	},
 	"theme": {
-		"colorBrand": "#35bfab",
-		"colorPrimary": "#334f52",
+		"colorBrand": "#de4331",
+		"colorPrimary": "#4E3F42",
 		"colorSecondary": "#7b888e",
-		"colorBrandSecondary": "#1fc9e7",
+		"colorBrandSecondary": "#FCC841",
 		"colorBg": "#eeeeee",
 		"colorBorder": "#ffffff",
 		"colorCard": "#ffffff66",
 		"colorArticle": "#ffffffcc"
 	},
-	"backgroundColors": [
-		"#EDDD62",
-		"#9EE7D1",
-		"#84D68A",
-		"#EDDD62",
-		"#88E6E5",
-		"#a7f3d0"
-	],
+	"backgroundColors": ["#FCC841", "#DFEFFC", "#DEDE92", "#DE4331", "#FE9750", "#FCC841"],
 	"artImages": [
 		{
 			"id": "cat",
@@ -31,5 +24,35 @@
 			"url": "/images/art/a46372ff45bc5524.jpg"
 		}
 	],
-	"currentArtImageId": "cat"
+	"currentArtImageId": "a46372ff45bc5524",
+	"backgroundImages": [
+		{
+			"id": "",
+			"url": ""
+		}
+	],
+	"currentBackgroundImageId": "",
+	"socialButtons": [
+		{
+			"id": "github",
+			"type": "github",
+			"value": "https://github.com/yysuni",
+			"label": "Github",
+			"order": 3
+		},
+		{
+			"id": "juejin",
+			"type": "juejin",
+			"value": "https://juejin.cn/user/2427311675422382",
+			"label": "稀土掘金",
+			"order": 2
+		},
+		{
+			"id": "email",
+			"type": "email",
+			"value": "yysuni1001@gmail.com",
+			"label": "",
+			"order": 1
+		}
+	]
 }

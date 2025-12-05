@@ -13,10 +13,14 @@ import LikePosition from './like-position'
 import { useSize } from '@/hooks/use-size'
 import { motion } from 'motion/react'
 import { useLayoutEditStore } from './stores/layout-edit-store'
+import { useConfigStore } from './stores/config-store'
 import { toast } from 'sonner'
+import ConfigDialog from './config-dialog/index'
+import { useEffect } from 'react'
 
 export default function Home() {
 	const { maxSM } = useSize()
+	const { cardStyles, configDialogOpen, setConfigDialogOpen } = useConfigStore()
 	const editing = useLayoutEditStore(state => state.editing)
 	const saveEditing = useLayoutEditStore(state => state.saveEditing)
 	const cancelEditing = useLayoutEditStore(state => state.cancelEditing)
@@ -30,6 +34,20 @@ export default function Home() {
 		cancelEditing()
 		toast.info('已取消此次拖拽布局修改')
 	}
+
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+				e.preventDefault()
+				setConfigDialogOpen(true)
+			}
+		}
+
+		window.addEventListener('keydown', handleKeyDown)
+		return () => {
+			window.removeEventListener('keydown', handleKeyDown)
+		}
+	}, [setConfigDialogOpen])
 
 	return (
 		<>
@@ -55,19 +73,18 @@ export default function Home() {
 			)}
 
 			<div className='max-sm:flex max-sm:flex-col max-sm:items-center max-sm:gap-6 max-sm:pt-28 max-sm:pb-20'>
-				<ArtCard />
-				<HiCard />
-				{!maxSM && <ClockCard />}
-				{!maxSM && <CalendarCard />}
-				{!maxSM && <MusicCard />}
-				<SocialButtons />
-				{!maxSM && <ShareCard />}
-				
-				
-				<AritcleCard />
-				{!maxSM && <WriteButtons />}
-				<LikePosition />
+				{cardStyles.artCard?.enabled !== false && <ArtCard />}
+				{cardStyles.hiCard?.enabled !== false && <HiCard />}
+				{!maxSM && cardStyles.clockCard?.enabled !== false && <ClockCard />}
+				{!maxSM && cardStyles.calendarCard?.enabled !== false && <CalendarCard />}
+				{!maxSM && cardStyles.musicCard?.enabled !== false && <MusicCard />}
+				{cardStyles.socialButtons?.enabled !== false && <SocialButtons />}
+				{!maxSM && cardStyles.shareCard?.enabled !== false && <ShareCard />}
+				{cardStyles.articleCard?.enabled !== false && <AritcleCard />}
+				{!maxSM && cardStyles.writeButtons?.enabled !== false && <WriteButtons />}
+				{cardStyles.likePosition?.enabled !== false && <LikePosition />}
 			</div>
+			<ConfigDialog open={configDialogOpen} onClose={() => setConfigDialogOpen(false)} />
 		</>
 	)
 }
