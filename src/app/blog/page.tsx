@@ -2,7 +2,10 @@
 
 import Link from 'next/link'
 import dayjs from 'dayjs'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
 import { motion } from 'motion/react'
+
+dayjs.extend(weekOfYear)
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { ANIMATION_DELAY, INIT_DELAY } from '@/consts'
@@ -16,6 +19,8 @@ import { cn } from '@/lib/utils'
 import { batchDeleteBlogs } from './services/batch-delete-blogs'
 import { Check } from 'lucide-react'
 
+type DisplayMode = 'day' | 'week' | 'month' | 'year'
+
 export default function BlogPage() {
 	const { items, loading } = useBlogIndex()
 	const { isRead } = useReadArticles()
@@ -26,6 +31,7 @@ export default function BlogPage() {
 	const [editableItems, setEditableItems] = useState<BlogIndexItem[]>([])
 	const [selectedSlugs, setSelectedSlugs] = useState<Set<string>>(new Set())
 	const [saving, setSaving] = useState(false)
+	const [displayMode, setDisplayMode] = useState<DisplayMode>('year')
 
 	useEffect(() => {
 		if (!editMode) {
@@ -35,22 +41,63 @@ export default function BlogPage() {
 
 	const displayItems = editMode ? editableItems : items
 
-	const { groupedItems, years } = useMemo(() => {
+	const { groupedItems, groupKeys, getGroupLabel } = useMemo(() => {
 		const sorted = [...displayItems].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
 		const grouped = sorted.reduce(
 			(acc, item) => {
-				const year = dayjs(item.date).format('YYYY')
-				if (!acc[year]) {
-					acc[year] = []
+				let key: string
+				let label: string
+				const date = dayjs(item.date)
+
+				switch (displayMode) {
+					case 'day':
+						key = date.format('YYYY-MM-DD')
+						label = date.format('YYYY年MM月DD日')
+						break
+					case 'week':
+						const week = date.week()
+						key = `${date.format('YYYY')}-W${week.toString().padStart(2, '0')}`
+						label = `${date.format('YYYY')}年第${week}周`
+						break
+					case 'month':
+						key = date.format('YYYY-MM')
+						label = date.format('YYYY年MM月')
+						break
+					case 'year':
+					default:
+						key = date.format('YYYY')
+						label = date.format('YYYY年')
+						break
 				}
-				acc[year].push(item)
+
+				if (!acc[key]) {
+					acc[key] = { items: [], label }
+				}
+				acc[key].items.push(item)
 				return acc
 			},
-			{} as Record<string, BlogIndexItem[]>
+			{} as Record<string, { items: BlogIndexItem[]; label: string }>
 		)
-		const yearKeys = Object.keys(grouped).sort((a, b) => Number(b) - Number(a))
-		return { groupedItems: grouped, years: yearKeys }
-	}, [displayItems])
+
+		const keys = Object.keys(grouped).sort((a, b) => {
+			// 按时间倒序排序
+			if (displayMode === 'week') {
+				// 周格式：YYYY-WW
+				const [yearA, weekA] = a.split('-W').map(Number)
+				const [yearB, weekB] = b.split('-W').map(Number)
+				if (yearA !== yearB) return yearB - yearA
+				return weekB - weekA
+			}
+			return b.localeCompare(a)
+		})
+
+		return {
+			groupedItems: grouped,
+			groupKeys: keys,
+			getGroupLabel: (key: string) => grouped[key]?.label || key
+		}
+	}, [displayItems, displayMode])
 
 	const selectedCount = selectedSlugs.size
 	const buttonText = isAuth ? '保存' : '导入密钥'
@@ -160,24 +207,48 @@ export default function BlogPage() {
 				}}
 			/>
 
-			<div className='flex flex-col items-center justify-center gap-6 px-6 pt-32 pb-12 max-sm:pt-28'>
-				<>
-					{years.map((year, index) => (
+			<div className='flex flex-col items-center justify-center gap-6 px-6 pt-24 max-sm:pt-24'>
+				{items.length > 0 && (
+					<motion.div
+						initial={{ opacity: 0, scale: 0.6 }}
+						animate={{ opacity: 1, scale: 1 }}
+						className='card relative mx-auto flex items-center gap-1 rounded-xl p-1 max-sm:hidden'>
+						{(['day', 'week', 'month', 'year'] as DisplayMode[]).map(mode => (
+							<motion.button
+								key={mode}
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.95 }}
+								onClick={() => setDisplayMode(mode)}
+								className={cn(
+									'rounded-lg px-3 py-1.5 text-xs font-medium transition-all',
+									displayMode === mode ? 'bg-brand text-white shadow-sm' : 'text-secondary hover:text-brand hover:bg-white/60'
+								)}>
+								{mode === 'day' ? '日' : mode === 'week' ? '周' : mode === 'month' ? '月' : '年'}
+							</motion.button>
+						))}
+					</motion.div>
+				)}
+
+				{groupKeys.map((groupKey, index) => {
+					const group = groupedItems[groupKey]
+					if (!group) return null
+
+					return (
 						<motion.div
-							key={year}
-							initial={{ opacity: 0, scale: 0.9 }}
-							animate={{ opacity: 1, scale: 1 }}
-							transition={{ delay: INIT_DELAY + ANIMATION_DELAY * index }}
+							key={groupKey}
+							initial={{ opacity: 0, scale: 0.95 }}
+							whileInView={{ opacity: 1, scale: 1 }}
+							transition={{ delay: INIT_DELAY / 2 }}
 							className='card relative w-full max-w-[840px] space-y-6'>
 							<div className='mb-3 flex items-center gap-3 text-base'>
-								<div className='w-[44px] font-medium'>{year}</div>
+								<div className='font-medium'>{getGroupLabel(groupKey)}</div>
 
 								<div className='h-2 w-2 rounded-full bg-[#D9D9D9]'></div>
 
-								<div className='text-secondary text-sm'>{groupedItems[year].length} 篇文章</div>
+								<div className='text-secondary text-sm'>{group.items.length} 篇文章</div>
 							</div>
 							<div>
-								{groupedItems[year].map(it => {
+								{group.items.map(it => {
 									const hasRead = isRead(it.slug)
 									const isSelected = selectedSlugs.has(it.slug)
 									return (
