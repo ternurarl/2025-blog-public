@@ -12,7 +12,7 @@ import { ANIMATION_DELAY, INIT_DELAY } from '@/consts'
 import ShortLineSVG from '@/svgs/short-line.svg'
 import { useBlogIndex, type BlogIndexItem } from '@/hooks/use-blog-index'
 import { useReadArticles } from '@/hooks/use-read-articles'
-import JuejinSVG from '@/svgs/juejin.svg'
+
 import { useAuthStore } from '@/hooks/use-auth'
 import { readFileAsText } from '@/lib/file-utils'
 import { cn } from '@/lib/utils'
@@ -304,7 +304,7 @@ export default function BlogPage() {
 		
 					{!loading && items.length === 0 && <div className='text-secondary py-6 text-center text-sm'>暂无文章</div>}
 					{loading && <div className='text-secondary py-6 text-center text-sm'>加载中...</div>}
-				</>
+				
 			</div>
 
 			<motion.div initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} className='absolute top-4 right-6 flex gap-3 max-sm:hidden'>
