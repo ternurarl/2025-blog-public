@@ -56,5 +56,6 @@
 			"order": 2
 		}
 	],
-	"clockShowSeconds": false
+	"clockShowSeconds": false,
+	"summaryInContent": false
 }
