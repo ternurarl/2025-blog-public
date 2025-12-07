@@ -49,12 +49,12 @@
 <font style="color:rgb(51, 51, 51);">可以发现一段进行异或的数据</font>
 
 ```python
-# 加密数组
+#加密数组
 encrypted = [5, 20, 7, 1, 103, 111, 10, 18, 32, 18, 32, 10, 18, 20, 18, 20, 116, 116, 40]
-# 密钥
+#密钥
 key = 85
 
-# 解密并拼接为字符串
+#解密并拼接为字符串
 result = "".join([chr(b ^ key) for b in encrypted])
 print(result)
 ```
@@ -181,7 +181,7 @@ def solve_ctf():
     output_file = "flag.7z"
     xor_key = 0x05
 
-    # 用于存储段数据的字典 {id: hex_data}
+    #用于存储段数据的字典 {id: hex_data}
     segments = {}
     
     current_seg_id = -1
@@ -191,25 +191,25 @@ def solve_ctf():
             lines = f.readlines()
             
         for line in lines:
-            # 1. 捕捉段 ID (例如: Attacker uploading segment 1...)
+            #1. 捕捉段 ID (例如: Attacker uploading segment 1...)
             seg_match = re.search(r'Attacker uploading segment (\d+)', line)
             if seg_match:
                 current_seg_id = int(seg_match.group(1))
                 continue
 
-            # 2. 捕捉对应的数据 (例如: File data segment: 327fb9aa...)
-            # 逻辑：数据行通常紧跟在段声明行所在的块中
+            #2. 捕捉对应的数据 (例如: File data segment: 327fb9aa...)
+            #逻辑：数据行通常紧跟在段声明行所在的块中
             data_match = re.search(r'File data segment: ([0-9a-fA-F]+)', line)
             if data_match and current_seg_id != -1:
                 segments[current_seg_id] = data_match.group(1)
-                # 重置 ID 以防止数据错位（虽然此日志结构比较简单，但这更安全）
+                #重置 ID 以防止数据错位（虽然此日志结构比较简单，但这更安全）
                 current_seg_id = -1
 
         print(f"[+] 提取到 {len(segments)} 个数据段。")
 
-        # 3. 按顺序重组并解密
+        #3. 按顺序重组并解密
         full_hex = ""
-        # 检查是否找齐了所有段 (1 到 116)
+        #检查是否找齐了所有段 (1 到 116)
         sorted_keys = sorted(segments.keys())
         if not sorted_keys:
             print("[-] 未找到任何数据段，请检查日志文件内容。")
@@ -221,20 +221,20 @@ def solve_ctf():
         
         for i in sorted_keys:
             hex_str = segments[i]
-            # 将 Hex 转为 byte 数组
+            #将 Hex 转为 byte 数组
             chunk_bytes = bytes.fromhex(hex_str)
-            # 4. XOR 解密
+            #4. XOR 解密
             for b in chunk_bytes:
                 final_bytes.append(b ^ xor_key)
 
-        # 5. 写入文件
+        #5. 写入文件
         with open(output_file, "wb") as f:
             f.write(final_bytes)
             
         print(f"[+] 成功！文件已保存为: {output_file}")
         print("[+] 请解压该 7z 文件以获取 flag。")
         
-        # 验证一下文件头是否为 7z (37 7A BC AF)
+        #验证一下文件头是否为 7z (37 7A BC AF)
         if final_bytes[:4] == b'\x37\x7a\xbc\xaf':
             print("[+] 文件头检测正确：检测到 7z 归档格式。")
         else:
@@ -267,36 +267,36 @@ def unzip_nested(start_filename):
 
     while True:
         try:
-            # 【修改点】使用 pyzipper.AESZipFile 替代 zipfile.ZipFile
-            # 它可以处理 AES 加密和传统加密
+            #【修改点】使用 pyzipper.AESZipFile 替代 zipfile.ZipFile
+            #它可以处理 AES 加密和传统加密
             with pyzipper.AESZipFile(current_file, 'r') as zf:
-                # 1. 获取注释
-                # 有些时候注释可能是 None，做个防错处理
+                #1. 获取注释
+                #有些时候注释可能是 None，做个防错处理
                 if zf.comment:
                     comment = zf.comment.decode('utf-8', errors='ignore')
                 else:
                     comment = ""
 
-                # 2. 如果没有注释，可能已经解压完了
+                #2. 如果没有注释，可能已经解压完了
                 if not comment:
                     print(f"\n[+] 结束: 文件 {current_file} 没有注释。")
                     print("检查该文件内容，Flag 可能就在其中！")
                     break
 
-                # 3. 正则提取密码
+                #3. 正则提取密码
                 match = re.search(r'The password is\s+([^\s]+)', comment)
 
                 if match:
                     password = match.group(1)
                     print(f"[-] 文件: {current_file} | 密码: {password}")
 
-                    # 4. 解压文件
-                    # setpassword 可以处理 AES 密码
+                    #4. 解压文件
+                    #setpassword 可以处理 AES 密码
                     zf.setpassword(password.encode('utf-8'))
                     zf.extractall()
 
-                    # 5. 更新下一次的文件名
-                    # 获取压缩包内第一个文件的名字
+                    #5. 更新下一次的文件名
+                    #获取压缩包内第一个文件的名字
                     next_file = zf.namelist()[0]
                     current_file = next_file
                 else:
@@ -305,7 +305,7 @@ def unzip_nested(start_filename):
                     break
 
         except RuntimeError as e:
-            # 捕获具体的解压密码错误
+            #捕获具体的解压密码错误
             if 'Bad password' in str(e):
                 print(f"[x] 密码错误: {password}")
                 break
@@ -320,7 +320,7 @@ def unzip_nested(start_filename):
 if __name__ == "__main__":
     start_file = "flagggg999.zip"
 
-    # 切换到脚本所在目录，防止路径错误
+    #切换到脚本所在目录，防止路径错误
     script_dir = os.path.dirname(os.path.abspath(__file__))
     os.chdir(script_dir)
 
