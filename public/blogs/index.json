@@ -1,5 +1,15 @@
 [
   {
+    "slug": "isctf2025",
+    "title": "ISCTF2025-MISC-RE_WP",
+    "tags": [
+      "CTF"
+    ],
+    "date": "2025-12-07",
+    "summary": "部分题目wp",
+    "cover": "/blogs/isctf2025/c4c6bad47eeab494.png"
+  },
+  {
     "slug": "0",
     "title": "Blog初创",
     "tags": [],
