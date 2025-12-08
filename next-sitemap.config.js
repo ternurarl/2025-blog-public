@@ -1,0 +1,56 @@
+/** @type {import('next-sitemap').IConfig} */
+
+module.exports = {
+    // 1. 站点地址配置
+    // 优先读取 SITE_URL，否则读取 Vercel 预览地址，最后回退到本地
+    siteUrl: process.env.SITE_URL || 
+             (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
+    
+    generateRobotsTxt: true, // 自动生成 robots.txt
+    sitemapSize: 7000,       // 分割大小
+  
+    // 2. 核心逻辑：远程抓取 GitHub Raw 数据生成动态文章路径
+    additionalPaths: async (config) => {
+      const result = []
+  
+      // --- 🔧 变量拼凑区域 ---
+      
+      const ghOwner = process.env.NEXT_PUBLIC_GITHUB_OWNER
+      const ghRepo = process.env.NEXT_PUBLIC_GITHUB_REPO || '2025-blog-public'
+      const ghBranch = process.env.NEXT_PUBLIC_GITHUB_BRANCH || 'main'
+  
+      // 拼凑 GitHub Raw 地址
+      const githubIndexUrl = `https://raw.githubusercontent.com/${ghOwner}/${ghRepo}/${ghBranch}/public/blogs/index.json`
+      // -----------------------
+  
+      try {
+        console.log(`[next-sitemap] Fetching blog index from: ${githubIndexUrl}`)
+        
+        // 远程拉取 JSON (Node.js 18+ 原生支持 fetch)
+        const req = await fetch(githubIndexUrl)
+        
+        if (!req.ok) {
+          throw new Error(`GitHub Responded: ${req.status} (${req.statusText})`)
+        }
+  
+        const posts = await req.json()
+  
+        // 遍历文章列表，转换成 Sitemap 格式
+        posts.forEach((post) => {
+          result.push({
+            loc: `/blog/${post.slug}`,      // 你的文章链接结构
+            changefreq: 'weekly',
+            priority: 0.8,
+            lastmod: post.date || new Date().toISOString(),
+          })
+        })
+        
+        console.log(`[next-sitemap] Successfully added ${result.length} posts.`)
+  
+      } catch (error) {
+        console.error('[next-sitemap] Failed to fetch blog index.', error)
+      }
+  
+      return result
+    },
+  }
