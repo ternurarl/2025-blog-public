@@ -1,5 +1,15 @@
 [
   {
+    "slug": "solar4month",
+    "title": "Solar4月赛复现",
+    "tags": [
+      "应急响应",
+      "solar"
+    ],
+    "date": "2025-12-09",
+    "summary": "solar四月赛应急响应复现"
+  },
+  {
     "slug": "isctf2025",
     "title": "ISCTF2025-MISC-RE_WP",
     "tags": [
