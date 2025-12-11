@@ -78,7 +78,7 @@ export default function CategoriesPage() {
 	const categoryCards = useMemo<CategoryCard[]>(() => {
 		const cards = specialCategories.map<CategoryCard>(category => ({
 			...category,
-			href: `/categories/${encodeURIComponent(category.name)}`,
+			href: `/categories/${category.name}`,
 			previewArticles: category.articles.slice(0, 5)
 		}))
 
@@ -87,7 +87,7 @@ export default function CategoriesPage() {
 				name: '其他文章',
 				tags: [],
 				description: '未归类的最新文章',
-				icon: '??',
+				icon: '',
 				color: '#94a3b8',
 				articles: uncategorizedArticles,
 				count: uncategorizedArticles.length,
@@ -145,17 +145,20 @@ export default function CategoriesPage() {
 							whileInView={{ opacity: 1, y: 0 }}
 							transition={{ delay: INIT_DELAY / 2 + index * 0.08 }}
 							className='relative overflow-hidden rounded-[32px] border border-white/60 bg-white/80 p-6 shadow-[0_45px_120px_-60px_rgba(15,23,42,0.65)] backdrop-blur max-sm:p-5'>
-							<div className='flex flex-wrap items-center justify-between gap-3'>
-								<div className='flex flex-wrap items-center gap-3 text-lg font-semibold tracking-wide'>
-									<span className='text-2xl'>{category.icon}</span>
-									<span style={{ color: category.color }}>{category.name}</span>
-									<span className='text-secondary text-sm font-normal'>{category.count} 篇文章</span>
-								</div>
-								<Link
-									href={category.href}
-									className='text-sm font-medium text-brand transition-opacity hover:opacity-80'>
-									查看更多...
-								</Link>
+				<div className='flex flex-wrap items-center justify-between gap-3'>
+					<div className='flex flex-wrap items-center gap-3 text-lg font-semibold tracking-wide'>
+						<span
+							className='h-2.5 w-2.5 rounded-full'
+							style={{ background: category.color }}
+						/>
+						<span>{category.name}</span>
+						<span className='text-secondary text-sm font-normal'>{category.count} 篇文章</span>
+					</div>
+					<Link
+						href={category.href}
+						className='text-sm font-medium text-brand transition-opacity hover:opacity-80'>
+						查看更多...
+					</Link>
 							</div>
 
 							<div className='mt-4 space-y-1.5'>

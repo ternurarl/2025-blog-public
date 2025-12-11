@@ -78,7 +78,14 @@ export default function CategoryDetailPage({ params }: Props) {
 				className="card relative w-full max-w-[840px] space-y-6">
 				<div className="mb-3 flex items-center justify-between gap-3 text-base">
 					<div className="flex items-center gap-3">
-						{specialCategory && <span className="text-2xl">{specialCategory.icon}</span>}
+						{specialCategory ? (
+							<span
+								className="h-2.5 w-2.5 rounded-full"
+								style={{ background: specialCategory.color }}
+							/>
+						) : (
+							<span className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+						)}
 						<div className="font-medium">{specialCategory ? specialCategory.name : tag}</div>
 						<div className="h-2 w-2 rounded-full bg-[#D9D9D9]"></div>
 						<div className="text-secondary text-sm">{filteredItems.length} 篇文章</div>
@@ -126,7 +133,7 @@ export default function CategoryDetailPage({ params }: Props) {
 										{item.tags?.slice(0, 3).map((t: string) => (
 											<Link
 												key={t}
-												href={`/categories/${encodeURIComponent(t)}`}
+												href={`/categories/${t}`}
 												onClick={(e) => e.stopPropagation()}
 												className="text-secondary text-sm hover:text-brand transition-colors">
 												#{t}
