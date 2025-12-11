@@ -49,3 +49,5 @@ public/sitemap*.xml
 public/robots.txt
 #vscode
 .history/
+#codex-agents.md
+AGENTS.md
