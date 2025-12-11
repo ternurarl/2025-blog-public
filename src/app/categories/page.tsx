@@ -42,6 +42,7 @@ export default function CategoriesPage() {
 		const cards = Array.from(grouped.entries()).map(([name, articles]) => {
 			articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 			const meta = metaMap.get(name.toLowerCase())
+			const slug = encodeURIComponent(name)
 			return {
 				name,
 				description: meta?.description || '',
@@ -49,7 +50,7 @@ export default function CategoriesPage() {
 				articles,
 				count: articles.length,
 				latestDate: articles[0]?.date || '',
-				href: `/categories/${name}`,
+				href: `/categories/${slug}`,
 				previewArticles: articles.slice(0, 5)
 			}
 		})

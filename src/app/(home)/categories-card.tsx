@@ -65,7 +65,7 @@ export default function CategoriesCard() {
 								{/* 分类标题 */}
 								<div className='flex items-center justify-between'>
 									<Link
-										href={`/categories/${category.tag}`}
+										href={`/categories/${encodeURIComponent(category.tag)}`}
 										className='text-xs font-medium text-gray-700 hover:text-brand transition-colors'>
 										#{category.tag}
 									</Link>

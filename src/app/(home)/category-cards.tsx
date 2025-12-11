@@ -39,7 +39,7 @@ function CategoryCard({ tag, articles, cardKey, order, width, height, offsetX, o
 				{/* 分类标题 */}
 				<div className='flex items-center justify-between mb-2'>
 					<Link
-						href={`/categories/${tag}`}
+						href={`/categories/${encodeURIComponent(tag)}`}
 						className='text-sm font-medium text-gray-700 hover:text-brand transition-colors'>
 						{tag}
 					</Link>
@@ -87,7 +87,7 @@ function CategoryCard({ tag, articles, cardKey, order, width, height, offsetX, o
 
 				{/* 查看更多链接 */}
 				<Link
-					href={`/categories/${tag}`}
+					href={`/categories/${encodeURIComponent(tag)}`}
 					className='text-brand inline-flex items-center gap-1 text-xs transition-opacity hover:opacity-80 mt-2'>
 					查看更多 →
 				</Link>
