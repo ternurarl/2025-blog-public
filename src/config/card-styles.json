@@ -3,13 +3,13 @@
 		"width": 360,
 		"height": 200,
 		"order": 3,
-		"offsetX": null,
-		"offsetY": null,
+		"offsetX": -188,
+		"offsetY": -413,
 		"enabled": true
 	},
 	"hiCard": {
-		"width": 360,
-		"height": 288,
+		"width": 446,
+		"height": 352,
 		"order": 1,
 		"offsetX": null,
 		"offsetY": null,
@@ -37,8 +37,8 @@
 		"height": 66,
 		"offset": 120,
 		"order": 6,
-		"offsetX": null,
-		"offsetY": null,
+		"offsetX": 106,
+		"offsetY": 254,
 		"enabled": true
 	},
 	"socialButtons": {
@@ -50,19 +50,19 @@
 		"enabled": true
 	},
 	"shareCard": {
-		"width": 200,
-		"height": 180,
+		"width": 196,
+		"height": 167,
 		"order": 7,
-		"offsetX": null,
-		"offsetY": null,
+		"offsetX": -118,
+		"offsetY": 288,
 		"enabled": true
 	},
 	"articleCard": {
 		"width": 266,
 		"height": 160,
 		"order": 8,
-		"offsetX": null,
-		"offsetY": null,
+		"offsetX": -398,
+		"offsetY": 212,
 		"enabled": true
 	},
 	"writeButtons": {
@@ -85,8 +85,8 @@
 		"width": 54,
 		"height": 54,
 		"order": 8,
-		"offsetX": null,
-		"offsetY": null,
+		"offsetX": 111,
+		"offsetY": 342,
 		"enabled": true
 	},
 	"hatCard": {
