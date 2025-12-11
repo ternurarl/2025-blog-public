@@ -103,6 +103,54 @@
 		"order": 9,
 		"offsetX": null,
 		"offsetY": null,
+		"enabled": false
+	},
+	"categoryCard_0": {
+		"width": 266,
+		"height": 160,
+		"order": 11,
+		"offsetX": null,
+		"offsetY": null,
 		"enabled": true
+	},
+	"categoryCard_1": {
+		"width": 266,
+		"height": 160,
+		"order": 12,
+		"offsetX": null,
+		"offsetY": null,
+		"enabled": true
+	},
+	"categoryCard_2": {
+		"width": 266,
+		"height": 160,
+		"order": 13,
+		"offsetX": null,
+		"offsetY": null,
+		"enabled": true
+	},
+	"categoryCard_3": {
+		"width": 266,
+		"height": 160,
+		"order": 14,
+		"offsetX": null,
+		"offsetY": null,
+		"enabled": true
+	},
+	"categoryCard_4": {
+		"width": 266,
+		"height": 160,
+		"order": 15,
+		"offsetX": null,
+		"offsetY": null,
+		"enabled": false
+	},
+	"categoryCard_5": {
+		"width": 266,
+		"height": 160,
+		"order": 16,
+		"offsetX": null,
+		"offsetY": null,
+		"enabled": false
 	}
 }

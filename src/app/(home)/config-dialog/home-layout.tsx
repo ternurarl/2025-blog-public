@@ -14,11 +14,17 @@ const CARD_LABELS: Record<string, string> = {
 	socialButtons: '联系',
 	shareCard: '分享',
 	articleCard: '文章',
-	categoriesCard: '分类',
+	categoriesCard: '分类(旧)',
 	writeButtons: '写作',
 	navCard: '导航',
 	likePosition: '点赞',
-	hatCard: '帽子'
+	hatCard: '帽子',
+	categoryCard_0: '分类1',
+	categoryCard_1: '分类2',
+	categoryCard_2: '分类3',
+	categoryCard_3: '分类4',
+	categoryCard_4: '分类5',
+	categoryCard_5: '分类6'
 }
 
 interface HomeLayoutProps {

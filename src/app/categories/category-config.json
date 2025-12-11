@@ -1,0 +1,32 @@
+{
+  "specialCategories": [
+    {
+      "name": "Web",
+      "tags": ["Web", "web", "frontend", "backend", "fullstack", "javascript", "html", "css", "react", "vue", "node"],
+      "description": "Web开发相关文章",
+      "icon": "🌐",
+      "color": "#61dafb"
+    },
+    {
+      "name": "Misc",
+      "tags": ["Misc", "misc", "miscellaneous", "其他", "杂项"],
+      "description": "杂项和安全相关文章",
+      "icon": "🔧",
+      "color": "#ffa500"
+    },
+    {
+      "name": "比赛",
+      "tags": ["比赛", "competition", "contest", "CTF", "ctf", "solar", "challenge", "赛事"],
+      "description": "比赛和竞赛相关文章",
+      "icon": "🏆",
+      "color": "#ffd700"
+    },
+    {
+      "name": "应急响应",
+      "tags": ["应急响应", "emergency", "incident", "security", "安全", "response", "forensics"],
+      "description": "应急响应和安全事件相关文章",
+      "icon": "🚨",
+      "color": "#ff4444"
+    }
+  ]
+}

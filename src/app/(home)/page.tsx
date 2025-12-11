@@ -8,7 +8,6 @@ import MusicCard from '@/app/(home)/music-card'
 import SocialButtons from '@/app/(home)/social-buttons'
 import ShareCard from '@/app/(home)/share-card'
 import AritcleCard from '@/app/(home)/aritcle-card'
-import CategoriesCard from '@/app/(home)/categories-card'
 import WriteButtons from '@/app/(home)/write-buttons'
 import LikePosition from './like-position'
 import HatCard from './hat-card'
@@ -83,7 +82,6 @@ export default function Home() {
 				{cardStyles.socialButtons?.enabled !== false && <SocialButtons />}
 				{!maxSM && cardStyles.shareCard?.enabled !== false && <ShareCard />}
 				{cardStyles.articleCard?.enabled !== false && <AritcleCard />}
-				{cardStyles.categoriesCard?.enabled !== false && <CategoriesCard />}
 				{!maxSM && cardStyles.writeButtons?.enabled !== false && <WriteButtons />}
 				{cardStyles.likePosition?.enabled !== false && <LikePosition />}
 				{cardStyles.hatCard?.enabled !== false && <HatCard />}

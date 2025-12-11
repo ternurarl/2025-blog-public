@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import ShortLineSVG from '@/svgs/short-line.svg'
 import { useReadArticles } from '@/hooks/use-read-articles'
 import { notFound } from 'next/navigation'
+import categoryConfig from '@/app/categories/category-config.json'
 
 interface Props {
 	params: {
@@ -23,12 +24,28 @@ export default function CategoryDetailPage({ params }: Props) {
 	// 解码标签参数
 	const tag = decodeURIComponent(params.tag)
 	
-	// 筛选出包含该标签的文章
+	// 检查是否是特殊分类
+	const specialCategory = categoryConfig.specialCategories.find(cat => cat.name === tag)
+	
+	// 筛选文章
 	const filteredItems = useMemo(() => {
-		return items.filter(item => 
-			item.tags && item.tags.includes(tag)
-		).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-	}, [items, tag])
+		if (specialCategory) {
+			// 如果是特殊分类，根据配置的tags来筛选
+			return items.filter(item => 
+				item.tags && item.tags.some(itemTag => 
+					specialCategory.tags.some(catTag => 
+						itemTag.toLowerCase().includes(catTag.toLowerCase()) || 
+						catTag.toLowerCase().includes(itemTag.toLowerCase())
+					)
+				)
+			).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+		} else {
+			// 如果不是特殊分类，按原来的逻辑筛选
+			return items.filter(item => 
+				item.tags && item.tags.includes(tag)
+			).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+		}
+	}, [items, tag, specialCategory])
 
 	if (loading) {
 		return (
@@ -38,7 +55,7 @@ export default function CategoryDetailPage({ params }: Props) {
 		)
 	}
 
-	// 如果没有找到该标签的文章，返回404
+	// 如果没有找到该分类的文章，返回404
 	if (filteredItems.length === 0) {
 		notFound()
 	}
@@ -61,7 +78,8 @@ export default function CategoryDetailPage({ params }: Props) {
 				className="card relative w-full max-w-[840px] space-y-6">
 				<div className="mb-3 flex items-center justify-between gap-3 text-base">
 					<div className="flex items-center gap-3">
-						<div className="font-medium">#{tag}</div>
+						{specialCategory && <span className="text-2xl">{specialCategory.icon}</span>}
+						<div className="font-medium">{specialCategory ? specialCategory.name : tag}</div>
 						<div className="h-2 w-2 rounded-full bg-[#D9D9D9]"></div>
 						<div className="text-secondary text-sm">{filteredItems.length} 篇文章</div>
 					</div>
@@ -71,6 +89,12 @@ export default function CategoryDetailPage({ params }: Props) {
 						← 所有分类
 					</Link>
 				</div>
+				
+				{specialCategory && (
+					<div className="mb-4">
+						<p className="text-secondary text-sm">{specialCategory.description}</p>
+					</div>
+				)}
 				
 				<div>
 					{filteredItems.map((item, index) => {
@@ -99,7 +123,7 @@ export default function CategoryDetailPage({ params }: Props) {
 									</div>
 									
 									<div className="flex flex-wrap items-center gap-2 max-sm:hidden">
-										{item.tags?.map(t => (
+										{item.tags?.slice(0, 3).map((t: string) => (
 											<Link
 												key={t}
 												href={`/categories/${encodeURIComponent(t)}`}
