@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import { useReadArticles } from '@/hooks/use-read-articles'
 import { useMemo } from 'react'
 import type { BlogIndexItem } from '@/hooks/use-blog-index'
+import { resolveCategoryName } from '@/lib/category-utils'
 
 interface CategoryCardProps {
 	tag: string
@@ -106,10 +107,8 @@ export default function CategoryCards() {
 		const categories: Record<string, BlogIndexItem[]> = {}
 		
 		items.forEach(item => {
-			const categoryName = (item.category || '未分类').trim()
-			if (!categories[categoryName]) {
-				categories[categoryName] = []
-			}
+			const categoryName = resolveCategoryName(item)
+			if (!categories[categoryName]) categories[categoryName] = []
 			categories[categoryName].push(item)
 		})
 		

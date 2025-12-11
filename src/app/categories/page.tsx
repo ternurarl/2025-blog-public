@@ -8,6 +8,7 @@ import { INIT_DELAY } from '@/consts'
 import dayjs from 'dayjs'
 import { useReadArticles } from '@/hooks/use-read-articles'
 import categoryConfig from './category-config.json'
+import { resolveCategoryName, getCategoryMeta } from '@/lib/category-utils'
 
 type SpecialCategory = (typeof categoryConfig.specialCategories)[number]
 
@@ -27,21 +28,17 @@ export default function CategoriesPage() {
 	const { isRead } = useReadArticles()
 
 	const categoryCards = useMemo<CategoryCard[]>(() => {
-		const metaMap = new Map<string, SpecialCategory>()
-		categoryConfig.specialCategories.forEach(cat => metaMap.set(cat.name.toLowerCase(), cat))
-
 		const grouped = new Map<string, BlogIndexItem[]>()
+
 		items.forEach(item => {
-			const key = (item.category || '未分类').trim()
-			if (!grouped.has(key)) {
-				grouped.set(key, [])
-			}
+			const key = resolveCategoryName(item)
+			if (!grouped.has(key)) grouped.set(key, [])
 			grouped.get(key)!.push(item)
 		})
 
 		const cards = Array.from(grouped.entries()).map(([name, articles]) => {
 			articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-			const meta = metaMap.get(name.toLowerCase())
+			const meta = getCategoryMeta(name)
 			const slug = encodeURIComponent(name)
 			return {
 				name,

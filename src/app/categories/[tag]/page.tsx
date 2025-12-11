@@ -9,7 +9,7 @@ import dayjs from 'dayjs'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import ShortLineSVG from '@/svgs/short-line.svg'
 import { useReadArticles } from '@/hooks/use-read-articles'
-import categoryConfig from '@/app/categories/category-config.json'
+import { resolveCategoryName, getCategoryMeta } from '@/lib/category-utils'
 
 dayjs.extend(weekOfYear)
 
@@ -22,6 +22,8 @@ interface Props {
 }
 
 const FALLBACK_COLOR = 'var(--color-brand)'
+const cardClass =
+	'relative w-full max-w-[840px] rounded-[32px] border border-white/60 bg-white/80 p-6 shadow-[0_45px_120px_-60px_rgba(15,23,42,0.65)] backdrop-blur'
 
 export default function CategoryDetailPage({ params }: Props) {
 	const { items, loading } = useBlogIndex()
@@ -30,22 +32,14 @@ export default function CategoryDetailPage({ params }: Props) {
 	const normalizedTag = decodedTag.trim().toLowerCase()
 	const [displayMode, setDisplayMode] = useState<DisplayMode>('year')
 
-	const specialCategory = categoryConfig.specialCategories.find(cat => cat.name.toLowerCase() === normalizedTag)
+	const specialCategory = getCategoryMeta(decodedTag)
 
 	const filteredItems = useMemo(() => {
 		return items
 			.filter(item => {
-				const normalizedCategory = item.category ? item.category.trim().toLowerCase() : ''
+				const normalizedCategory = resolveCategoryName(item).trim().toLowerCase()
 				if (normalizedCategory) return normalizedCategory === normalizedTag
-				if (!normalizedCategory && normalizedTag === '未分类') return true
-				if (!normalizedCategory && specialCategory && item.tags?.length) {
-					return item.tags.some(itemTag =>
-						specialCategory.tags.some(catTag =>
-							itemTag.toLowerCase().includes(catTag.toLowerCase()) || catTag.toLowerCase().includes(itemTag.toLowerCase())
-						)
-					)
-				}
-				return false
+				return normalizedTag === '未分类'
 			})
 			.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 	}, [items, normalizedTag, specialCategory])
@@ -106,7 +100,7 @@ export default function CategoryDetailPage({ params }: Props) {
 				<motion.div
 					initial={{ opacity: 0, scale: 0.95 }}
 					whileInView={{ opacity: 1, scale: 1 }}
-					className='card relative space-y-4 rounded-3xl p-6'>
+					className={`${cardClass} space-y-4`}>
 					<div className='flex flex-wrap items-center justify-between gap-3'>
 						<div className='flex flex-wrap items-center gap-3 text-lg font-semibold'>
 							<span className='h-2.5 w-2.5 rounded-full' style={{ background: categoryColor }} />
@@ -121,7 +115,10 @@ export default function CategoryDetailPage({ params }: Props) {
 				</motion.div>
 
 				{filteredItems.length > 0 && (
-					<motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className='card flex gap-2 rounded-3xl p-3 max-sm:flex-wrap'>
+					<motion.div
+						initial={{ opacity: 0, scale: 0.95 }}
+						animate={{ opacity: 1, scale: 1 }}
+						className='relative flex gap-2 rounded-[24px] border border-white/60 bg-white/80 p-3 shadow-[0_30px_90px_-60px_rgba(15,23,42,0.6)] backdrop-blur max-sm:flex-wrap'>
 						{(['day', 'week', 'month', 'year'] as DisplayMode[]).map(mode => (
 							<motion.button
 								key={mode}
@@ -144,7 +141,7 @@ export default function CategoryDetailPage({ params }: Props) {
 				<motion.div
 					initial={{ opacity: 0, scale: 0.95 }}
 					whileInView={{ opacity: 1, scale: 1 }}
-					className='card w-full max-w-[840px] rounded-3xl p-8 text-center text-secondary'>
+					className={`${cardClass} py-8 text-center text-secondary`}>
 					该分类暂无文章
 				</motion.div>
 			)}
@@ -158,7 +155,7 @@ export default function CategoryDetailPage({ params }: Props) {
 						initial={{ opacity: 0, scale: 0.95 }}
 						whileInView={{ opacity: 1, scale: 1 }}
 						transition={{ delay: INIT_DELAY / 2 }}
-						className='card relative w-full max-w-[840px] space-y-4 rounded-3xl p-6'>
+					className={`${cardClass} space-y-4`}>
 						<div className='mb-2 flex items-center gap-3'>
 							<div className='font-medium'>{group.label}</div>
 							<div className='h-2 w-2 rounded-full bg-[#D9D9D9]' />
