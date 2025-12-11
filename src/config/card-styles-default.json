@@ -96,5 +96,13 @@
 		"offsetX": null,
 		"offsetY": null,
 		"enabled": false
+	},
+	"categoriesCard": {
+		"width": 266,
+		"height": 160,
+		"order": 9,
+		"offsetX": null,
+		"offsetY": null,
+		"enabled": true
 	}
 }

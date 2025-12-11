@@ -17,6 +17,8 @@ import ShareFilledSVG from '@/svgs/share-filled.svg'
 import ShareOutlineSVG from '@/svgs/share-outline.svg'
 import WebsiteFilledSVG from '@/svgs/website-filled.svg'
 import WebsiteOutlineSVG from '@/svgs/website-outline.svg'
+import TagFilledSVG from '@/svgs/tag-filled.svg'
+import TagOutlineSVG from '@/svgs/tag-outline.svg'
 import { usePathname } from 'next/navigation'
 import clsx from 'clsx'
 import { cn } from '@/lib/utils'
@@ -30,6 +32,12 @@ const list = [
 		iconActive: ScrollFilledSVG,
 		label: '近期文章',
 		href: '/blog'
+	},
+	{
+		icon: TagOutlineSVG,
+		iconActive: TagFilledSVG,
+		label: '文章分类',
+		href: '/categories'
 	},
 	//{
 	//	icon: ProjectsOutlineSVG,

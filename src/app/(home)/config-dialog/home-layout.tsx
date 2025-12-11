@@ -14,6 +14,7 @@ const CARD_LABELS: Record<string, string> = {
 	socialButtons: '联系',
 	shareCard: '分享',
 	articleCard: '文章',
+	categoriesCard: '分类',
 	writeButtons: '写作',
 	navCard: '导航',
 	likePosition: '点赞',
@@ -38,7 +39,7 @@ export function HomeLayout({ cardStylesData, setCardStylesData, onClose }: HomeL
 	}
 
 	const handleReset = () => {
-		setCardStylesData(cardStylesDefault as CardStyles)
+		setCardStylesData(cardStylesDefault as unknown as CardStyles)
 	}
 
 	return (
