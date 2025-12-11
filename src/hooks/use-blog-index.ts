@@ -10,6 +10,7 @@ export type BlogIndexItem = {
     summary?: string
     cover?: string
     hidden?: boolean
+    category?: string
 }
 
 // 改进 fetcher，抛出状态码以便处理 404

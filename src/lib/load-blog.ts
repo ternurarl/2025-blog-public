@@ -5,6 +5,7 @@ export type BlogConfig = {
 	summary?: string
 	cover?: string
 	hidden?: boolean
+	category?: string
 }
 
 export type LoadedBlog = {

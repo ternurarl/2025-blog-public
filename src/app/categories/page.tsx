@@ -9,18 +9,15 @@ import dayjs from 'dayjs'
 import { useReadArticles } from '@/hooks/use-read-articles'
 import categoryConfig from './category-config.json'
 
-interface SpecialCategory {
+type SpecialCategory = (typeof categoryConfig.specialCategories)[number]
+
+interface CategoryCard {
 	name: string
-	tags: string[]
 	description: string
-	icon: string
 	color: string
 	articles: BlogIndexItem[]
 	count: number
 	latestDate: string
-}
-
-interface CategoryCard extends SpecialCategory {
 	href: string
 	previewArticles: BlogIndexItem[]
 }
@@ -29,76 +26,36 @@ export default function CategoriesPage() {
 	const { items, loading } = useBlogIndex()
 	const { isRead } = useReadArticles()
 
-	const specialCategories = useMemo<SpecialCategory[]>(() => {
-		const categories: SpecialCategory[] = categoryConfig.specialCategories.map(config => ({
-			...config,
-			articles: [],
-			count: 0,
-			latestDate: ''
-		}))
-
-		items.forEach(item => {
-			if (!item.tags || item.tags.length === 0) return
-
-			categories.forEach(category => {
-				const hasMatchingTag = item.tags.some(tag =>
-					category.tags.some(catTag =>
-						tag.toLowerCase().includes(catTag.toLowerCase()) ||
-						catTag.toLowerCase().includes(tag.toLowerCase())
-					)
-				)
-
-				if (hasMatchingTag) {
-					category.articles.push(item)
-				}
-			})
-		})
-
-		categories.forEach(category => {
-			category.articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-			category.count = category.articles.length
-			category.latestDate = category.articles[0]?.date || ''
-		})
-
-		return categories.filter(category => category.count > 0).sort((a, b) => b.count - a.count)
-	}, [items])
-
-	const categorizedSlugs = useMemo(() => {
-		return new Set<string>(
-			specialCategories.flatMap(category => category.articles.map(article => article.slug))
-		)
-	}, [specialCategories])
-
-	const uncategorizedArticles = useMemo(() => {
-		return items
-			.filter(item => !categorizedSlugs.has(item.slug))
-			.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-	}, [items, categorizedSlugs])
-
 	const categoryCards = useMemo<CategoryCard[]>(() => {
-		const cards = specialCategories.map<CategoryCard>(category => ({
-			...category,
-			href: `/categories/${category.name}`,
-			previewArticles: category.articles.slice(0, 5)
-		}))
+		const metaMap = new Map<string, SpecialCategory>()
+		categoryConfig.specialCategories.forEach(cat => metaMap.set(cat.name.toLowerCase(), cat))
 
-		if (uncategorizedArticles.length > 0) {
-			cards.push({
-				name: '其他文章',
-				tags: [],
-				description: '未归类的最新文章',
-				icon: '',
-				color: '#94a3b8',
-				articles: uncategorizedArticles,
-				count: uncategorizedArticles.length,
-				latestDate: uncategorizedArticles[0]?.date || '',
-				href: '/blog',
-				previewArticles: uncategorizedArticles.slice(0, 5)
-			})
-		}
+		const grouped = new Map<string, BlogIndexItem[]>()
+		items.forEach(item => {
+			const key = (item.category || '未分类').trim()
+			if (!grouped.has(key)) {
+				grouped.set(key, [])
+			}
+			grouped.get(key)!.push(item)
+		})
 
-		return cards
-	}, [specialCategories, uncategorizedArticles])
+		const cards = Array.from(grouped.entries()).map(([name, articles]) => {
+			articles.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+			const meta = metaMap.get(name.toLowerCase())
+			return {
+				name,
+				description: meta?.description || '',
+				color: meta?.color || 'var(--color-brand)',
+				articles,
+				count: articles.length,
+				latestDate: articles[0]?.date || '',
+				href: `/categories/${name}`,
+				previewArticles: articles.slice(0, 5)
+			}
+		})
+
+		return cards.sort((a, b) => b.count - a.count)
+	}, [items])
 
 	if (loading) {
 		return (

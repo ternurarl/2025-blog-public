@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 import Link from 'next/link'
 import { useBlogIndex } from '@/hooks/use-blog-index'
 import { useMemo } from 'react'
-import { ANIMATION_DELAY, INIT_DELAY } from '@/consts'
+import { INIT_DELAY } from '@/consts'
 import dayjs from 'dayjs'
 import ShortLineSVG from '@/svgs/short-line.svg'
 import { useReadArticles } from '@/hooks/use-read-articles'
@@ -21,31 +21,40 @@ export default function CategoryDetailPage({ params }: Props) {
 	const { items, loading } = useBlogIndex()
 	const { isRead } = useReadArticles()
 	
-	// 解码标签参数
+	// 解码分类参数
 	const tag = decodeURIComponent(params.tag)
-	
-	// 检查是否是特殊分类
-	const specialCategory = categoryConfig.specialCategories.find(cat => cat.name === tag)
+	const normalizedTag = tag.trim().toLowerCase()
+
+	// 检查是否是配置过的分类
+	const specialCategory = categoryConfig.specialCategories.find(
+		cat => cat.name.toLowerCase() === normalizedTag
+	)
 	
 	// 筛选文章
 	const filteredItems = useMemo(() => {
-		if (specialCategory) {
-			// 如果是特殊分类，根据配置的tags来筛选
-			return items.filter(item => 
-				item.tags && item.tags.some(itemTag => 
-					specialCategory.tags.some(catTag => 
-						itemTag.toLowerCase().includes(catTag.toLowerCase()) || 
-						catTag.toLowerCase().includes(itemTag.toLowerCase())
+		return items
+			.filter(item => {
+				const normalizedCategory = item.category?.trim().toLowerCase()
+				if (normalizedCategory) {
+					return normalizedCategory === normalizedTag
+				}
+				// 未设置分类的文章默认进入「未分类」
+				if (!normalizedCategory && normalizedTag === '未分类') {
+					return true
+				}
+				// 兜底：兼容旧数据，根据配置中的标签匹配
+				if (!normalizedCategory && specialCategory && item.tags?.length) {
+					return item.tags.some(itemTag =>
+						specialCategory.tags.some(catTag =>
+							itemTag.toLowerCase().includes(catTag.toLowerCase()) ||
+							catTag.toLowerCase().includes(itemTag.toLowerCase())
+						)
 					)
-				)
-			).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-		} else {
-			// 如果不是特殊分类，按原来的逻辑筛选
-			return items.filter(item => 
-				item.tags && item.tags.includes(tag)
-			).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-		}
-	}, [items, tag, specialCategory])
+				}
+				return false
+			})
+			.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+	}, [items, normalizedTag, specialCategory])
 
 	if (loading) {
 		return (

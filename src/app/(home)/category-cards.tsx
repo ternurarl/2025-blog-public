@@ -2,7 +2,6 @@ import Card from '@/components/card'
 import { useCenterStore } from '@/hooks/use-center'
 import { useBlogIndex } from '@/hooks/use-blog-index'
 import { useConfigStore } from './stores/config-store'
-import { CARD_SPACING } from '@/consts'
 import Link from 'next/link'
 import { HomeDraggableLayer } from './home-draggable-layer'
 import { motion } from 'motion/react'
@@ -42,7 +41,7 @@ function CategoryCard({ tag, articles, cardKey, order, width, height, offsetX, o
 					<Link
 						href={`/categories/${tag}`}
 						className='text-sm font-medium text-gray-700 hover:text-brand transition-colors'>
-						#{tag}
+						{tag}
 					</Link>
 					<span className='text-secondary text-xs'>
 						{articles.length}
@@ -102,24 +101,20 @@ export default function CategoryCards() {
 	const { items } = useBlogIndex()
 	const { cardStyles } = useConfigStore()
 
-	// 获取所有唯一标签和对应的文章
+	// 根据分类字段聚合文章
 	const categorizedItems = useMemo(() => {
 		const categories: Record<string, BlogIndexItem[]> = {}
 		
 		items.forEach(item => {
-			if (item.tags && item.tags.length > 0) {
-				item.tags.forEach(tag => {
-					if (!categories[tag]) {
-						categories[tag] = []
-					}
-					categories[tag].push(item)
-				})
+			const categoryName = (item.category || '未分类').trim()
+			if (!categories[categoryName]) {
+				categories[categoryName] = []
 			}
+			categories[categoryName].push(item)
 		})
 		
-		// 对每个分类按日期排序
-		Object.keys(categories).forEach(tag => {
-			categories[tag].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+		Object.keys(categories).forEach(name => {
+			categories[name].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 		})
 		
 		return categories

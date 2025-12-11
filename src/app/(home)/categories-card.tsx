@@ -2,7 +2,6 @@ import Card from '@/components/card'
 import { useCenterStore } from '@/hooks/use-center'
 import { useBlogIndex } from '@/hooks/use-blog-index'
 import { useConfigStore } from './stores/config-store'
-import { CARD_SPACING } from '@/consts'
 import Link from 'next/link'
 import { HomeDraggableLayer } from './home-draggable-layer'
 import { motion } from 'motion/react'
@@ -23,21 +22,18 @@ export default function CategoriesCard() {
 		const categories: Record<string, BlogIndexItem[]> = {}
 		
 		items.forEach(item => {
-			if (item.tags && item.tags.length > 0) {
-				item.tags.forEach(tag => {
-					if (!categories[tag]) {
-						categories[tag] = []
-					}
-					categories[tag].push(item)
-				})
+			const categoryName = (item.category || '未分类').trim()
+			if (!categories[categoryName]) {
+				categories[categoryName] = []
 			}
+			categories[categoryName].push(item)
 		})
 		
-		// 对每个分类按日期排序并限制数量
-		Object.keys(categories).forEach(tag => {
-			categories[tag].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+		// 对每个分类按日期排序
+		Object.keys(categories).forEach(name => {
+			categories[name].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 		})
-		
+
 		return categories
 	}, [items])
 
