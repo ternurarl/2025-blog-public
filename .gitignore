@@ -46,9 +46,13 @@ next-env.d.ts
 
 #vscode
 <<<<<<< HEAD
+<<<<<<< HEAD
 .history/
 #codex-agents.md
 AGENTS.md
+=======
+.history/
+>>>>>>> parent of 3e42d77 (Merge branch 'main' into feature)
 =======
 .history/
 >>>>>>> parent of 3e42d77 (Merge branch 'main' into feature)
