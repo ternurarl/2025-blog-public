@@ -1,7 +1,6 @@
 [
   {
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     "slug": "solar4month",
     "title": "Solar4月赛复现",
     "tags": [
@@ -24,10 +23,7 @@
     "category": "比赛"
   },
   {
-=======
->>>>>>> parent of 3e42d77 (Merge branch 'main' into feature)
-=======
->>>>>>> parent of 3e42d77 (Merge branch 'main' into feature)
+
     "slug": "0",
     "title": "Blog初创",
     "tags": [],
