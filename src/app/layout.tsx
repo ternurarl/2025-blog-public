@@ -1,7 +1,6 @@
 import '@/styles/globals.css'
 
 import type { Metadata } from 'next'
-import { Analytics } from '@vercel/analytics/next'
 import Layout from '@/layout'
 import Head from '@/layout/head'
 import siteContent from '@/config/site-content.json'
@@ -53,7 +52,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 				/>
 
 				<Layout>{children}</Layout>
-				<Analytics />
 			</body>
 		</html>
 	)

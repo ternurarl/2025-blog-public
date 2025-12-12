@@ -44,10 +44,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# next-sitemap
-public/sitemap*.xml
-public/robots.txt
 #vscode
+<<<<<<< HEAD
 .history/
 #codex-agents.md
 AGENTS.md
+=======
+.history/
+>>>>>>> parent of 3e42d77 (Merge branch 'main' into feature)
