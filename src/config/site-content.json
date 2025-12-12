@@ -60,6 +60,7 @@
 	"summaryInContent": true,
 	"isCachePem": false,
 	"hideEditButton": false,
-	"currentHatIndex": 1,
+	"enableCategories": true,
+	"currentHatIndex": 3,
 	"hatFlipped": false
 }
