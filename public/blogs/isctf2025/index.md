@@ -112,7 +112,15 @@ print(result)
 >
 > <font style="color:rgb(227, 227, 227);background-color:rgb(40, 42, 44);">Invalid SSH identification string.^M$</font>
 
-然后
+SSH-2.0-OpenSSH_8.6 这个版本信息搜集有漏洞，目前已知的严重 RCE 漏洞（如 CVE-2020-14145、CVE-2021-41617 等）大多涉及配置错误或权限问题
+
+只要你用 ssh（而不是 nc）连上去，它就 “认为你是合法客户端”，于是输出 banner 并断开。
+
+ssh 客户端在连接时会先发送自己的协议版本字符串（如 SSH-2.0-OpenSSH_9.2）；
+服务端认为这是一个合法的 SSH 客户端，于是执行预设逻辑：
+打印 ASCII banner（其中嵌入了 flag）；
+然后立即断开（不进行密码或密钥认证）。
+
 
 ```bash
 ssh qyy@challenge.bluesharkinfo.com -p 29145

@@ -3,7 +3,9 @@
   "tags": [
     "CTF"
   ],
-  "date": "2025-12-07",
+  "date": "2025-12-07T08:00",
   "summary": "部分题目wp",
-  "cover": "/blogs/isctf2025/c4c6bad47eeab494.png"
+  "cover": "/blogs/isctf2025/c4c6bad47eeab494.png",
+  "hidden": false,
+  "category": ""
 }
