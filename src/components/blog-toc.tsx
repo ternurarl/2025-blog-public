@@ -63,7 +63,7 @@ export function BlogToc({ toc, delay = 0 }: BlogTocProps) {
 			initial={{ opacity: 0, scale: 0.8 }}
 			animate={{ opacity: 1, scale: 1 }}
 			transition={{ delay }}
-			className='bg-card w-full rounded-xl border p-3 text-sm'>
+			className='bg-card w-full rounded-xl border p-4 text-[15px]'>
 			<h2 className='text-secondary mb-2 font-medium'>目录</h2>
 			<div className='relative max-h-[300px] space-y-2 overflow-auto'>
 				{toc.length === 0 && <div className='text-secondary'>暂无</div>}
@@ -71,7 +71,7 @@ export function BlogToc({ toc, delay = 0 }: BlogTocProps) {
 					<a
 						key={item.id + item.level}
 						href={`#${item.id}`}
-						className={clsx('hover:text-brand relative block pl-3 transition-colors', item.id === minActiveId && 'text-brand')}
+						className={clsx('hover:text-brand relative block pl-3 text-[14px] leading-relaxed transition-colors', item.id === minActiveId && 'text-brand')}
 						style={{ paddingLeft: (item.level - 1) * 8 }}>
 						{item.text}
 					</a>
