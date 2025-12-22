@@ -8,6 +8,9 @@ module.exports = {
     
     generateRobotsTxt: true, // 自动生成 robots.txt
     sitemapSize: 7000,       // 分割大小
+
+    // ✅ 新增：只生成 sitemap.xml，不再生成 sitemap-0.xml 索引结构
+    generateIndexSitemap: false,
   
     // 2. 核心逻辑：远程抓取 GitHub Raw 数据生成动态文章路径
     additionalPaths: async (config) => {
