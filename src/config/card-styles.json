@@ -82,11 +82,11 @@
 		"enabled": true
 	},
 	"likePosition": {
-		"width": 54,
-		"height": 54,
+		"width": 52,
+		"height": 62,
 		"order": 8,
-		"offsetX": 111,
-		"offsetY": 6,
+		"offsetX": 108,
+		"offsetY": 332,
 		"enabled": true
 	},
 	"hatCard": {
