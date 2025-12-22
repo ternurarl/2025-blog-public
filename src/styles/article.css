@@ -3,7 +3,7 @@
 	color: inherit;
 	word-break: break-word;
 	letter-spacing: 0.03em;
-	font-size: 15px;
+	font-size: 17px;
 	width: 100%;
 	overflow: hidden;
 }
@@ -177,7 +177,7 @@
 
 /* Images */
 .prose img {
-	max-width: 60%;
+	max-width: 66%;
 	margin: 1.5em auto;
 	height: auto;
 	border-radius: 12px;
