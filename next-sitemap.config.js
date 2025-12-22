@@ -1,5 +1,16 @@
 /** @type {import('next-sitemap').IConfig} */
 
+const formatLastmod = (dateStr) => {
+	const fallback = new Date().toISOString().slice(0, 10)
+
+	if (!dateStr) return fallback
+
+	const d = new Date(dateStr)
+	if (Number.isNaN(d.getTime())) return fallback
+
+	return d.toISOString().slice(0, 10)
+}
+
 module.exports = {
     // 1. 站点地址配置
     // 优先读取 SITE_URL，否则读取 Vercel 预览地址，最后回退到本地
@@ -44,7 +55,7 @@ module.exports = {
             loc: `/blog/${post.slug}`,      // 你的文章链接结构
             changefreq: 'weekly',
             priority: 0.8,
-            lastmod: post.date || new Date().toISOString(),
+            lastmod: formatLastmod(post.date),
           })
         })
         
