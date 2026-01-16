@@ -40,15 +40,11 @@ let katexModule: typeof import('katex') | null = null
 let katexLoadAttempted = false
 
 async function loadKatex() {
-	if (katexModule) return katexModule
-	if (katexLoadAttempted) return null
+	if (katexLoadAttempted) return katexModule
 	katexLoadAttempted = true
 
 	try {
-		// katex is published as CJS; depending on bundler/runtime the dynamic import
-		// may return either the exports object directly or as `default`.
-		const mod: any = await import('katex')
-		katexModule = (mod?.default ?? mod) as any
+		katexModule = await import('katex')
 		return katexModule
 	} catch (error) {
 		console.warn('Failed to load katex module:', error)
@@ -100,6 +96,7 @@ export async function renderMarkdown(markdown: string): Promise<MarkdownRenderRe
 		return `<li>${inner}</li>\n`
 	}
 
+	const katex = await loadKatex()
 	const renderMath = (content: string, displayMode: boolean) => {
 		if (!katex) {
 			// Keep original delimiters if katex is not available
@@ -118,9 +115,60 @@ export async function renderMarkdown(markdown: string): Promise<MarkdownRenderRe
 		}
 	}
 
-	// Register extensions BEFORE lexing so math gets tokenized on cold refresh.
 	marked.use({
-		renderer
+		renderer,
+		extensions: [
+			// Block math: $$ ... $$
+			{
+				name: 'mathBlock',
+				level: 'block',
+				start(src: string) {
+					return src.indexOf('$$')
+				},
+				tokenizer(src: string) {
+					const match = src.match(/^\$\$([\s\S]+?)\$\$(?:\n+|$)/)
+					if (!match) return
+					return {
+						type: 'mathBlock',
+						raw: match[0],
+						text: match[1].trim()
+					} as any
+				},
+				renderer(token: any) {
+					return `${renderMath(token.text || '', true)}\n`
+				}
+			},
+			// Inline math: $ ... $
+			{
+				name: 'mathInline',
+				level: 'inline',
+				start(src: string) {
+					const idx = src.indexOf('$')
+					return idx === -1 ? undefined : idx
+				},
+				tokenizer(src: string) {
+					// Avoid $$ (block) and escaped dollars
+					if (src.startsWith('$$')) return
+					if (src.startsWith('\\$')) return
+
+					const match = src.match(/^\$([^\n$]+?)\$/)
+					if (!match) return
+
+					const inner = match[1]
+					// Heuristic: require some non-space content
+					if (!inner || !inner.trim()) return
+
+					return {
+						type: 'mathInline',
+						raw: match[0],
+						text: inner.trim()
+					} as any
+				},
+				renderer(token: any) {
+					return renderMath(token.text || '', false)
+				}
+			}
+		]
 	})
 
 	// Pre-process with marked lexer first (after extensions are registered)
