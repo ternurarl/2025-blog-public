@@ -40,11 +40,15 @@ let katexModule: typeof import('katex') | null = null
 let katexLoadAttempted = false
 
 async function loadKatex() {
-	if (katexLoadAttempted) return katexModule
+	if (katexModule) return katexModule
+	if (katexLoadAttempted) return null
 	katexLoadAttempted = true
 
 	try {
-		katexModule = await import('katex')
+		// katex is published as CJS; depending on bundler/runtime the dynamic import
+		// may return either the exports object directly or as `default`.
+		const mod: any = await import('katex')
+		katexModule = (mod?.default ?? mod) as any
 		return katexModule
 	} catch (error) {
 		console.warn('Failed to load katex module:', error)
@@ -96,7 +100,6 @@ export async function renderMarkdown(markdown: string): Promise<MarkdownRenderRe
 		return `<li>${inner}</li>\n`
 	}
 
-	const katex = await loadKatex()
 	const renderMath = (content: string, displayMode: boolean) => {
 		if (!katex) {
 			// Keep original delimiters if katex is not available
@@ -115,6 +118,7 @@ export async function renderMarkdown(markdown: string): Promise<MarkdownRenderRe
 		}
 	}
 
+	// Register extensions BEFORE lexing so math gets tokenized on cold refresh.
 	marked.use({
 		renderer,
 		extensions: [
