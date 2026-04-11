@@ -1,5 +1,6 @@
 # 2025 Blog
-
+当你阅读本页时，已经吃到石了
+![Stone Badge](https://stone.professorlee.work/api/stone/ternurarl/2025-blog-public)
 > 最新引导说明：https://www.yysuni.com/blog/readme
 
 该项目使用 Github App 管理项目内容，请保管好后续创建的 **Private key**，不要上传到公开网上。
