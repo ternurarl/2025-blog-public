@@ -1,5 +1,5 @@
 {
 	"title": "关于本站",
 	"description": "一个基于 Github 的现代化博客系统",
-	"content": "# 关于我:\n一个CTFer.misc手.\n\n\n# 技术栈\n- Next.js\n- React\n- TypeScript\n- Tailwind CSS\n- Motion\n- Github API"
+	"content": "## 关于我:\n一个CTFer.misc手.\n\n\n## 网站技术栈\n- **Next.js**\n- React\n- TypeScript\n- Tailwind CSS\n- Motion\n- Github API"
 }
